@@ -108,24 +108,24 @@ for ii, ll in enumerate(lines):
     user_name = np.append(user_name, ufn + ' ' + uln)
     user_base_dir = np.append(user_base_dir, ubd + '/')
 
-users = slack_client.users_list()['members']
+#users = slack_client.users_list()['members']
 
-user_id = np.array(())
+#user_id = np.array(())
 
-for ii, name in enumerate(user_name):
-    
-    for kk, member in enumerate(users):
-        
-        if name == member['profile']['real_name']:
-            user_id = np.append(user_id, member['id'])
-            break
+#for ii, name in enumerate(user_name):
+#    
+#    for kk, member in enumerate(users):
+#        
+#        if name == member['profile']['real_name']:
+#            user_id = np.append(user_id, member['id'])
+#           break
             
 interval = args.interval #hours
 channel = args.channel #channel to send messages to
 
 if args.cronjob:
     
-    for un, ubd in zip(user_id, user_base_dir):
+    for un, ubd in zip(user_name, user_base_dir):
 
         chain_files = get_all_chain_files(np.str(ubd))
 
@@ -136,8 +136,8 @@ if args.cronjob:
                 updated_chain_files = np.append(updated_chain_files, path)
 
         if len(updated_chain_files) == 0:
-            msg = f':robot_face: <@{un}> has no MCMC runs going that updated in the last {interval} hrs. :crying_cat_face:'
-            slack_client.chat_postMessage(channel = channel, text = msg, link_names = 1)
+            msg = f':robot_face: {un} has no MCMC runs going that updated in the last {interval} hrs. :crying_cat_face:'
+            slack_client.chat_postMessage(channel = channel, text = msg)
 
         else:
             nsamp = []
@@ -153,7 +153,7 @@ if args.cronjob:
 
             # WGL moved this block down from line below else statement
             # WGL now message after data extracted
-            init_msg = f':robot_face: <@{un}> has the following MCMC runs going:'
+            init_msg = f':robot_face: {un} has the following MCMC runs going:'
             slack_client.chat_postMessage(channel = channel, text = init_msg)
 
             msg = ''
@@ -170,7 +170,7 @@ else:
 
     while True:
 
-        for un, ubd in zip(user_id, user_base_dir):
+        for un, ubd in zip(user_name, user_base_dir):
 
             chain_files = get_all_chain_files(np.str(ubd))
 
@@ -181,7 +181,7 @@ else:
                     updated_chain_files = np.append(updated_chain_files, path)
 
             if len(updated_chain_files) == 0:
-                msg = f':robot_face: <@{un}> has no MCMC runs going that updated in the last {interval} hrs. :crying_cat_face:'
+                msg = f':robot_face: {un} has no MCMC runs going that updated in the last {interval} hrs. :crying_cat_face:'
                 slack_client.chat_postMessage(channel = channel, text = msg, link_names = 1)
 
             else:
@@ -198,7 +198,7 @@ else:
                  
                 # WGL moved this block down from line below else statement
                 # WGL now message after data extracted
-                init_msg = f':robot_face: <@{un}> has the following MCMC runs going:'
+                init_msg = f':robot_face: {un} has the following MCMC runs going:'
                 slack_client.chat_postMessage(channel = channel, text = init_msg)
 
                 msg = ''
